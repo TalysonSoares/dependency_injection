@@ -96,30 +96,144 @@
           <!-- .slide: data-state="layout-title" class="bg-dark"-->
 <h1 id="inje%C3%A7%C3%A3o-de-depend%C3%AAncia%3A" tabindex="-1">Injeção de Dependência:</h1>
 <h1 id="boas-pr%C3%A1ticas-para-c%C3%B3digo-limpo" tabindex="-1">Boas Práticas para Código Limpo</h1>
-<div class="slide-link"><a href="https://raybo.org/slide_template"><i class="bi bi-box-arrow-up-right"></i> go.raybo.org/tfit</a></div>
 <blockquote>
 <blockquote></blockquote>
 </blockquote>
-<p>The double greater than signs is for your own notes and don't show up.</p>
 <hr>
-<h1 id="second-slide" tabindex="-1">Second Slide</h1>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="antes-de-tudo%3A-um-pouquinho-de-hist%C3%B3ria-e-solid" tabindex="-1">Antes de Tudo: Um Pouquinho de História e SOLID</h1>
 <ul>
-<li>Bulletpoints</li>
-<li><a href="https://github.github.com/gfm/">Markdown Links</a></li>
+<li>Single Responsibility Principle (SRP) - Princípio da Responsabilidade Única</li>
+<li>Open/Closed Principle (OCP) - Princípio Aberto/Fechado</li>
+<li>Liskov Substitution Principle (LSP) - Princípio da Substituição de Liskov</li>
+<li>Interface Segregation Principle (ISP) - Princípio da Segregação de Interfaces</li>
+<li>Dependency Inversion Principle (DIP) - Princípio da Inversão de Dependência</li>
 </ul>
 <hr>
-<h1 id="third-slide" tabindex="-1">Third Slide</h1>
-<pre><code class="language-js">const electron = require('electron')
-const BrowserWindow = electron.BrowserWindow
-const app = electron.app
+<!-- .slide: data-state="layout-title" class="bg-secondary"-->
+<h1 id="decifrando-o-'d'-do-solid" tabindex="-1">Decifrando o 'D' do SOLID</h1>
+<img src="../images/pikachu.webp" style="width: 700px; heigth: 700px; border-radius: 3%;">
+<hr>
+<p>title: code</p>
+<h1 id="amarrados-ao-new%3A-o-que-poderia-dar-errado%3F" tabindex="-1">Amarrados ao new: o que poderia dar errado?</h1>
+<pre><code class="language-php">class EmailController {
+    private $mailerService;
+    private $emailRequest;
 
-app.on('ready', function () {
-  const appWindow
-  appWindow = new BrowserWindow()
-  appWindow.loadURL('https://raybo.org')
-})
+    public function __construct() {
+        $this-&gt;mailerService = new SmtpMailerService();
+        $this-&gt;emailRequest = new EmailRequest();
+    }
+
+    public function sendEmail() {
+        $this-&gt;mailerService-&gt;send($this-&gt;emailRequest);
+    }
+}
 </code></pre>
-<p>More info on <a href="https://revealjs.com/code/#step-by-step-highlights">reveal.js site</a>. More examples in the <a href="../?d=demo">demo</a></p>
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="o-que-parecia-simples-virou-um-pesadelo" tabindex="-1">O que parecia simples virou um pesadelo</h1>
+<img src="../images/beatles-1.webp" class="rounded">
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-danger"-->
+<h1 id="problemas-de-n%C3%A3o-usar-inje%C3%A7%C3%A3o-de-depend%C3%AAncia%3A" tabindex="-1">Problemas de Não Usar Injeção de Dependência:</h1>
+<ul>
+<li>Forte Acoplamento</li>
+<li>Dificuldade em Testes</li>
+<li>Manutenção Difícil</li>
+<li>Dificuldade em Escalar o Sistema</li>
+</ul>
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="dev-tentando-entender-o-espaguete-da-depend%C3%AAncia..." tabindex="-1">Dev tentando entender o espaguete da dependência...</h1>
+<img src="../images/john.gif" style="width:700px;" class="rounded">
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-danger"-->
+<h1 id="problemas-de-forte-acoplamento%3A" tabindex="-1">Problemas de Forte Acoplamento:</h1>
+<ul>
+<li>Baixa Flexibilidade</li>
+<li>Menor Capacidade de Testes Isolados</li>
+</ul>
+<hr>
+<h1 id="separando-as-preocupa%C3%A7%C3%B5es%3A-a-magia-da-interface" tabindex="-1">Separando as Preocupações: A Magia da Interface</h1>
+<pre><code class="language-php">interface MailerServiceInterface {
+    public function send(EmailRequest $emailRequest): void;
+}
+
+class SmtpMailerService implements MailerServiceInterface {
+    public function send(EmailRequest $emailRequest): void {
+        // Código para enviar e-mail via SMTP
+    }
+}
+
+class ApiMailerService implements MailerServiceInterface {
+    public function send(EmailRequest $emailRequest): void {
+        // Código para enviar e-mail via API de terceiros
+    }
+}
+
+</code></pre>
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="com-isso-estamos-caminhando" tabindex="-1">Com isso estamos caminhando</h1>
+<h1 id="para-uma-arquitetura-mais-limpa." tabindex="-1">para uma arquitetura mais limpa.</h1>
+<img src="../images/walking.webp">
+<hr>
+<h1 id="inje%C3%A7%C3%A3o-de-depend%C3%AAncias-em-a%C3%A7%C3%A3o%3A-o-papel-do-construtor" tabindex="-1">Injeção de Dependências em Ação: O Papel do Construtor</h1>
+<pre><code class="language-php">class EmailController {
+    public function __construct(
+        private readonly MailerServiceInterface $mailerService,
+        private readonly EmailRequest $emailRequest
+    ) {
+    }
+
+    public function sendEmail() {
+        $this-&gt;mailerService-&gt;send($this-&gt;emailRequest);
+    }
+}
+
+</code></pre>
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="totalmente-mind-blowing" tabindex="-1">Totalmente Mind Blowing</h1>
+<img src="../images/paul.webp" style="width:700px;" class="rounded">
+<hr>
+<h1 id="solu%C3%A7%C3%B5es-com-inje%C3%A7%C3%A3o-de-depend%C3%AAncia" tabindex="-1">Soluções com Injeção de Dependência</h1>
+<!-- .slide: data-state="layout-title" class="bg-success"-->
+<ul>
+<li>Desacoplamento</li>
+<li>Facilidade de Testes</li>
+<li>Manutenção Simplificada</li>
+<li>Facilidade de Extensão</li>
+</ul>
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="acabou..." tabindex="-1">Acabou...</h1>
+<img src="../images/its _over.webp" style="width:700px;" class="rounded">
+<p>quase, pode voltar</p>
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="n%C3%A3o-existe-bala-de-prata" tabindex="-1">Não existe bala de prata</h1>
+<img src="../images/the-beatles-paul-mccartney.gif" style="width:700px;" class="rounded">
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-warning"-->
+<h1 style="color: black;">Armadilhas Comuns e Como Evitá-las</h1>
+<ul>
+<li>Dependency Hell</li>
+<li>Over-Engineering</li>
+</ul>
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<h1 id="acabou" tabindex="-1">Acabou</h1>
+<img src="../images/acabou.webp" style="width:700px;" class="rounded">
+<hr>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<img src="../images/palmas.gif" style="width:700px;" class="rounded">
+<hr>
+<h1 id="hora-do-caf%C3%A9" tabindex="-1">hora do café</h1>
+<!-- .slide: data-state="layout-title" class="bg-dark"-->
+<img src="../images/cafe.gif" style="width:700px;" class="rounded">
+<hr>
 
         </main>
         <aside class="aside aside-supplemental col col-md-3 col-lg-2 d-none d-md-block">
@@ -134,10 +248,55 @@ app.on('ready', function () {
                     <li><a href="#boas-pr%C3%A1ticas-para-c%C3%B3digo-limpo">Boas Práticas para Código Limpo</a>
             		</li>
 
-                    <li><a href="#second-slide">Second Slide</a>
+                    <li><a href="#antes-de-tudo%3A-um-pouquinho-de-hist%C3%B3ria-e-solid">Antes de Tudo: Um Pouquinho de História e SOLID</a>
             		</li>
 
-                    <li><a href="#third-slide">Third Slide</a>
+                    <li><a href="#decifrando-o-'d'-do-solid">Decifrando o 'D' do SOLID</a>
+            		</li>
+
+                    <li><a href="#amarrados-ao-new%3A-o-que-poderia-dar-errado%3F">Amarrados ao new: o que poderia dar errado?</a>
+            		</li>
+
+                    <li><a href="#o-que-parecia-simples-virou-um-pesadelo">O que parecia simples virou um pesadelo</a>
+            		</li>
+
+                    <li><a href="#problemas-de-n%C3%A3o-usar-inje%C3%A7%C3%A3o-de-depend%C3%AAncia%3A">Problemas de Não Usar Injeção de Dependência:</a>
+            		</li>
+
+                    <li><a href="#dev-tentando-entender-o-espaguete-da-depend%C3%AAncia...">Dev tentando entender o espaguete da dependência...</a>
+            		</li>
+
+                    <li><a href="#problemas-de-forte-acoplamento%3A">Problemas de Forte Acoplamento:</a>
+            		</li>
+
+                    <li><a href="#separando-as-preocupa%C3%A7%C3%B5es%3A-a-magia-da-interface">Separando as Preocupações: A Magia da Interface</a>
+            		</li>
+
+                    <li><a href="#com-isso-estamos-caminhando">Com isso estamos caminhando</a>
+            		</li>
+
+                    <li><a href="#para-uma-arquitetura-mais-limpa.">para uma arquitetura mais limpa.</a>
+            		</li>
+
+                    <li><a href="#inje%C3%A7%C3%A3o-de-depend%C3%AAncias-em-a%C3%A7%C3%A3o%3A-o-papel-do-construtor">Injeção de Dependências em Ação: O Papel do Construtor</a>
+            		</li>
+
+                    <li><a href="#totalmente-mind-blowing">Totalmente Mind Blowing</a>
+            		</li>
+
+                    <li><a href="#solu%C3%A7%C3%B5es-com-inje%C3%A7%C3%A3o-de-depend%C3%AAncia">Soluções com Injeção de Dependência</a>
+            		</li>
+
+                    <li><a href="#acabou...">Acabou...</a>
+            		</li>
+
+                    <li><a href="#n%C3%A3o-existe-bala-de-prata">Não existe bala de prata</a>
+            		</li>
+
+                    <li><a href="#acabou">Acabou</a>
+            		</li>
+
+                    <li><a href="#hora-do-caf%C3%A9">hora do café</a>
             		</li>
                 </ol>
             </div>
